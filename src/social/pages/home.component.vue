@@ -4,12 +4,6 @@ export default {
   data() {
     return {
       icons: [
-        'pi-circle-fill',
-        'pi-circle-fill',
-        'pi-circle-fill',
-        'pi-circle-fill',
-        'pi-circle-fill',
-        'pi-circle-fill',
         'pi-inbox',
         'pi-sign-out'
       ],
@@ -32,8 +26,7 @@ export default {
 </script>
 
 <template>
-
-  <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+  <div class="flex flex-column sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
     <div style="width: 05%; height: 100vh; background-color: #131920" class="fixed flex-column align-content-end">
       <router-link v-for="icon in iconsBar" :key="icon" to="/home" class="flex mb-4 justify-content-center text-white no-underline">
         <i :class="'pi ' + icon" style="font-size: 2rem"></i>
@@ -44,7 +37,7 @@ export default {
           <div class="">
             <img style="width: 55px; height:50px;" class="ml-8 mt-2 mr-8" src="/src/assets/images/Toasts_ICON.png" alt="">
           </div>
-          <div style="width: 100%; height: auto; background-color: #131920" class="p-3 row text-white">
+          <div style="width: 100%; height: auto; background-color: #131920" class="flex p-3 row text-white justify-content-end">
             <router-link v-for="icon in icons" to="/home" class="mx-6 text-white">
               <i :class="'pi ' + icon" style="font-size: 2rem"></i>
             </router-link>
