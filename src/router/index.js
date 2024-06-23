@@ -19,6 +19,12 @@ const router = createRouter({
             path: '/',
             redirect: 'home'
         },
+        {
+            path:'/profile',
+            name:'profile',
+            component:()=>import('../profile/pages/profile.component.vue'),
+            props:true,
+        }
     ]
 })
 
