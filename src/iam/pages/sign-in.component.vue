@@ -1,6 +1,22 @@
 <script>
+import {useAuthenticationStore} from "../services/authentication.store.js";
+import {SignInRequest} from "../model/sign-in.request.js";
+
 export default {
-  name: "login.component"
+  name: "sign-in",
+  data() {
+    return {
+      username: '',
+      password: '',
+    };
+  },
+  methods: {
+    onSignIn() {
+      let authenticationStore = useAuthenticationStore();
+      let signInRequest = new SignInRequest(this.username, this.password);
+      authenticationStore.signIn(signInRequest, this.$router);
+    },
+  }
 }
 </script>
 
@@ -16,16 +32,16 @@ export default {
       <pv-button class="mt-4" style="width: 300px; background-color: #464646" label="Join with Google"></pv-button>
       <p class="p-component mt-2 mb-2">or</p>
       <label for="username" class="p-component block mb-2">Username:</label>
-      <pv-input-text style="width: 300px" id="username" placeholder="Username" type="text"/>
+      <pv-input-text style="width: 300px" id="username" placeholder="Username" type="text" v-model="username"/>
       <br>
       <label for="password" class="p-component block mt-2 mb-2">Password:</label>
-      <pv-input-text style="width: 300px" id="password" placeholder="Password" type="password"/>
+      <pv-input-text style="width: 300px" id="password" placeholder="Password" type="password"  v-model="password"/>
       <br>
-      <router-link to="/home">
-        <pv-button class="mt-2" style="width: 300px" label="Log-in"></pv-button>
-      </router-link>
+      <pv-button @click="onSignIn" class="mt-2" style="width: 300px" label="Log-in"></pv-button>
       <p class="p-component mt-2 mb-2">or</p>
-      <pv-button style="width: 300px" label="Sign-up today"></pv-button>
+      <router-link to="/sign-up">
+        <pv-button style="width: 300px" label="Sign-up today"></pv-button>
+      </router-link>
     </div>
   </div>
 </div>
