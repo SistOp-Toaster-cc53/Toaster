@@ -32,11 +32,15 @@ import Dropdown from "primevue/dropdown";
 import Tag from "primevue/tag";
 import Card from "primevue/card";
 import SelectButton from "primevue/selectbutton";
+import {createPinia} from "pinia";
+
+const pinia = createPinia();
 
 createApp(App)
     .use(router)
     .use(PrimeVue, { ripple: true })
     .use(ToastService)
+    .use(pinia)
     .component('pv-data-table', DataTable)
     .component("pv-column", Column)
     .component('pv-toolbar', Toolbar)
