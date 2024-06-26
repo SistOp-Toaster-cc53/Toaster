@@ -36,7 +36,7 @@ export default {
         <label for="password" class="p-component block mt-2 mb-2">Password:</label>
         <pv-input-text style="width: 300px" id="password" placeholder="Password" type="password"  v-model="password"/>
         <br>
-        <pv-button @click="onSignUp" class="mt-2" style="width: 300px" label="Log-in"></pv-button>
+        <pv-button @click="onSignUp" class="mt-2" style="width: 300px" label="Sign-up"></pv-button>
       </div>
     </div>
   </div>

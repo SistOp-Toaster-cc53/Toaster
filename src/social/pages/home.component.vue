@@ -14,11 +14,11 @@ export default {
         1,
         1,
       ],
-      iconsBar:[
-          'pi-home',
-          'pi-search',
-          'pi-user',
-          'pi-ellipsis-v'
+      iconsBar: [
+        { icon: 'pi-home', route: '/home' },
+        { icon: 'pi-search', route: '/' },
+        { icon: 'pi-user', route: '/profile' },
+        { icon: 'pi-ellipsis-v', route: '/' }
       ],
     }
   }
@@ -28,8 +28,8 @@ export default {
 <template>
   <div class="flex flex-column sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
     <div style="width: 05%; height: 100vh; background-color: #131920" class="fixed flex-column align-content-end">
-      <router-link v-for="icon in iconsBar" :key="icon" to="/home" class="flex mb-4 justify-content-center text-white no-underline">
-        <i :class="'pi ' + icon" style="font-size: 2rem"></i>
+      <router-link v-for="item in iconsBar" :key="item.icon" :to="item.route" class="flex mb-4 justify-content-center text-white no-underline">
+        <i :class="'pi ' + item.icon" style="font-size: 2rem"></i>
       </router-link>
     </div>
     <div class="flex flex-column" style="width:95%;height:auto; margin-left:05%">
