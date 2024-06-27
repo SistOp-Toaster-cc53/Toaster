@@ -1,15 +1,22 @@
 <script>
   import PostService from '../services/posts.service.js';
   import axios from 'axios';
+  import { ref } from 'vue';
   import {useAuthenticationStore} from "../../iam/services/authentication.store.js";
   import CommentsService from "../services/comments,service.js";
 
   export default {
+    setup() {
+      const userStore = ref(useAuthenticationStore());
+
+      return {
+        userStore,
+      };},
   name: "home.component",
   data() {
   return {
   newPostContent: '',
-  selectedFile: null, // Data models for the uploaded file
+  selectedFile: null,
   posts: [],
   comments: [],
   newComment: '',
@@ -96,30 +103,26 @@
             alert('Failed to create post. Please try again.');
           });
     },
-    handleLike(postId, isLike) {
+    handleLike(postId) {
       const userStore = useAuthenticationStore();
       const post = this.posts.find(post => post.id === postId);
 
-      if (isLike) {
-        if (!post.likes.includes(userStore.username)) {
-          post.likes.push(userStore.username);
-          post.likeCount++;
-        }
+      const index = post.likes.indexOf(userStore.username);
+      if (index !== -1) {
+        post.likes.splice(index, 1);
+        post.likeCount--;
       } else {
-        const index = post.likes.indexOf(userStore.username);
-        if (index !== -1) {
-          post.likes.splice(index, 1);
-          post.likeCount--;
-        }
+        post.likes.push(userStore.username);
+        post.likeCount++;
       }
 
       PostService.update(postId, post)
           .then(() => {
-            console.log(`Post ${postId} ${isLike ? 'liked' : 'disliked'} successfully.`);
+            console.log(`Post ${postId} ${index !== -1 ? 'unliked' : 'liked'} successfully.`);
           })
           .catch(error => {
-            console.error(`Failed to ${isLike ? 'like' : 'dislike'} post ${postId}:`, error);
-            alert(`Failed to ${isLike ? 'like' : 'dislike'} post. Please try again.`);
+            console.error(`Failed to ${index !== -1 ? 'unlike' : 'like'} post ${postId}:`, error);
+            alert(`Failed to ${index !== -1 ? 'unlike' : 'like'} post. Please try again.`);
           });
     },
     createComment(postId) {
@@ -221,9 +224,10 @@
                     <button type="submit" class="comment-submit-btn">Post Comment</button>
                   </form>
                 </div>
-                <button @click="handleLike(post.id, true)">Like</button>
-                <button @click="handleLike(post.id, false)">Dislike</button>
-                <p>Likes: {{ post.likeCount }}</p>
+                <button @click="handleLike(post.id)">
+                <i class="pi pi-thumbs-up" :class="{ 'liked': post.likes.includes(userStore.username) }"></i>
+                {{ post.likeCount }}
+              </button>
               </template>
             </pv-card>
           </div>
@@ -258,4 +262,9 @@
   border-color: #2196f3;
   box-shadow: 0 0 10px rgba(33, 150, 243, 0.5);
 }
+
+.liked {
+  color: #2196f3;
+}
+
 </style>
