@@ -5,7 +5,7 @@ export default {
     return {
       iconsBar: [
         {icon: 'pi pi-home', route: '/home'},
-        {icon: 'pi pi-user', route: '/profile'},
+        {icon: 'pi pi-user', route: '/profile/' + localStorage.getItem('username')},
         {icon: 'pi pi-bell', route: '/notifications'},
         {icon: 'pi pi-cog', route: '/settings'}
       ]
