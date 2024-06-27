@@ -85,6 +85,9 @@
       }
 
       let user = useAuthenticationStore().username;
+      if (user === null || user === undefined || user === '') {
+        user = localStorage.getItem('username');
+      }
 
       const postData = {
         user: {
@@ -143,9 +146,16 @@
         return;
       }
 
+      let user = useAuthenticationStore().username;
+      if (user === null || user === undefined || user === '') {
+        user = localStorage.getItem('username');
+      }
+
       const userStore = useAuthenticationStore();
       const commentData = {
         postId: postId,
+        username: user,
+        userPhoto: '',
         user: {
           id: '123456789123456789123457',
           toaster: '',
@@ -160,15 +170,14 @@
         likeCount: 0,
         content: this.newComment,
         image: 'string',
-        dateCreated: new Date().toISOString()
+        dateCreated: new Date().toISOString(),
       };
 
       CommentsService.create(commentData)
           .then(response => {
             const newComment = response.data;
             newComment.postId = postId;
-            this.comments.push(newComment);
-            this.newComment = '';
+            this.fetchComments(postId, this.posts.findIndex(post => post.id === postId));
           })
           .catch(error => {
             console.error("Failed to create comment:", error.response ? error.response.data : error);
@@ -222,10 +231,6 @@
                     </router-link>
                     <p class="font-light" style="font-size:15px;">{{ post.content }}</p>
                     <img :src="post.image" alt="Post image" style="width: 300px; height: 325px;" />
-                    <h2>Interactions</h2>
-                    <div v-for="comment in comments.filter(comment => comment.postId === post.id)" :key="comment.id">
-                      <p class="comment-content">{{ comment.content }}</p>
-                    </div>
                     <div style="display:flex; gap:10px;">
                       <pv-button @click="handleLike(post.id)" style="display:flex;justify-content: center; align-items: center; position:static;background-color:#131920;">
                         <i class="pi pi-thumbs-up" :class="{ 'liked': post.likes.includes(userStore.username) } + ' mr-2'"></i>
@@ -240,8 +245,20 @@
 
                   <!-- Right side: Comments and interactions -->
                   <div style="flex: 1; border-left: 1px solid #ddd; padding-left: 20px;">
-                    <div v-for="comment in post.comments">
-                      {{comment.content}}
+                    <div v-for="(comment, index) in post.comments" :class="index !== 0 ? 'pt-2' : ''">
+                      <pv-card>
+                        <template #title>
+                          <router-link class="flex" :to="'profile/' + comment.username" style="text-decoration: none">
+                            <h5>{{ comment.username }}</h5>
+                          </router-link>
+                        </template>
+                        <template #subtitle>
+                          <!-- show a trash icon if username is same as user -->
+                        </template>
+                        <template #content>
+                          {{comment.content}}
+                        </template>
+                      </pv-card>
                     </div>
                   </div>
                 </div>
