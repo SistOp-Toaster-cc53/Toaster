@@ -122,14 +122,25 @@
       const userStore = useAuthenticationStore();
       const post = this.posts.find(post => post.id === postId);
 
-      const index = post.likes.indexOf(userStore.username);
+      console.log('Post found:', post.content);
+
+      let user = userStore.username;
+      if (user === null || user === undefined || user === '') {
+        user = localStorage.getItem('username');
+      }
+
+      console.log('User found:', user);
+
+      const index = post.likes.indexOf(user);
       if (index !== -1) {
         post.likes.splice(index, 1);
         post.likeCount--;
       } else {
-        post.likes.push(userStore.username);
+        post.likes.push(user);
         post.likeCount++;
       }
+
+      console.log('Post updated:', post)
 
       PostService.update(postId, post)
           .then(() => {
