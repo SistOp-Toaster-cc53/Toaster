@@ -4,7 +4,7 @@ export default {
   data() {
     return {
       iconsBar: [
-        {icon: 'pi pi-home', route: '/'},
+        {icon: 'pi pi-home', route: '/home'},
         {icon: 'pi pi-user', route: '/profile'},
         {icon: 'pi pi-bell', route: '/notifications'},
         {icon: 'pi pi-cog', route: '/settings'}

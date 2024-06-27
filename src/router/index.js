@@ -11,6 +11,7 @@ const router = createRouter({
         {path: '/sign-in', component: SignInComponent, meta: { hideHeaderAndSidebar: true }},
         {path: '/sign-up', component: SignUpComponent, meta: { hideHeaderAndSidebar: true }},
         { path: '/home', name: 'home', component: HomeComponent, props: true, },
+        { path: '/profile/:routeUsername', name: 'anyProfile', component: ProfileComponent, props: true, meta: { title: 'Profile' } },
         { path: '/profile', name:'profile', component: ProfileComponent, props:true, },
         { path: '/', redirect: 'home' },
     ]

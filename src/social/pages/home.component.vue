@@ -208,8 +208,10 @@
             <pv-card>
               <template #title>
                 <div>
-                  <i class="pi pi-user"/>
-                  <h5>{{ post.user.username }}</h5>
+                  <router-link :to="'profile/' + post.user.username" style="text-decoration: none">
+                    <i class="pi pi-user"/>
+                    <h5>{{ post.user.username }}</h5>
+                  </router-link>
                   <p class="font-light" style="font-size:15px;">{{ post.content }}</p>
                   <!-- Add this line to display the image -->
                   <img :src="post.image" alt="Post image" style="width: 300px; height: 325px;" />
