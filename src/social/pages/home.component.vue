@@ -142,7 +142,13 @@
 
       console.log('Post updated:', post)
 
-      PostService.update(postId, post)
+      let likeResource = {
+        username: user
+      }
+
+
+
+      PostService.like(postId, likeResource)
           .then(() => {
             console.log(`Post ${postId} ${index !== -1 ? 'unliked' : 'liked'} successfully.`);
           })
@@ -213,6 +219,8 @@
       <div class="shadow-md rounded-lg p-4" style="background-color:#FFFFFF;">
         <h1 class="text-4xl font-bold mb-2" style="color:#131920">For you</h1>
         <input type="text" v-model="newPostContent" placeholder="What are you thinking?" class="post-input"/>
+        <!-- Image element to display the uploaded file -->
+        <img v-if="imageUrl" :src="imageUrl" alt="Uploaded Image" style="width: auto; margin-bottom: 10px;" />
         <div class="flex justify-content-between align-items-center">
           <div class="flex justify-content-center">
             <!-- Hide the file input element -->
