@@ -51,7 +51,6 @@
             'Content-Type': 'multipart/form-data'
           }
         }).then(response => {
-          // The server should return the URL of the uploaded image
           this.selectedFile = response.data.data.url;
         }).catch(error => {
           console.error("Failed to upload image:", error);
@@ -73,7 +72,7 @@
           id: '123456789123456789123457',
           toaster: '',
           username: user,
-          image: 'path/to/user_image.jpg',  // This should be a URL if relevant
+          image: 'path/to/user_image.jpg',
           verified: false
         },
         comments: ['Really insightful post!'],
@@ -81,7 +80,7 @@
         likes: ['User4'],
         likeCount: 3,
         content: this.newPostContent,
-        image: this.selectedFile,  // Now using URL from Postimages
+        image: this.selectedFile,
         dateCreated: new Date().toISOString()
       };
 
@@ -152,9 +151,9 @@
       CommentsService.create(commentData)
           .then(response => {
             const newComment = response.data;
-            newComment.postId = postId; // Add postId to the new comment
-            this.comments.push(newComment); // Assuming response.data contains the new comment with a unique ID from the server
-            this.newComment = ''; // Clear the comment input after successful posting
+            newComment.postId = postId;
+            this.comments.push(newComment);
+            this.newComment = '';
           })
           .catch(error => {
             console.error("Failed to create comment:", error.response ? error.response.data : error);
