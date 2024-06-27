@@ -4,6 +4,7 @@
   import { ref } from 'vue';
   import {useAuthenticationStore} from "../../iam/services/authentication.store.js";
   import CommentsService from "../services/comments,service.js";
+  import {useToast} from "primevue/usetoast";
 
   export default {
     setup() {
@@ -17,6 +18,7 @@
   return {
   newPostContent: '',
   selectedFile: null,
+    toast: useToast(),
   posts: [],
   comments: [],
   newComment: '',
@@ -33,8 +35,8 @@
     fetchPosts() {
       PostService.getAll().then(response => {
         this.posts = response.data;
-        this.posts.forEach(post => {
-          this.fetchComments(post.id);
+        this.posts.forEach((post, index) => {
+          this.fetchComments(post.id, index);
         });
       }).catch(error => {
         console.error("There was an error fetching the posts:", error);
@@ -64,7 +66,17 @@
         });
       }
     },
-
+    fetchComments(postId, index) {
+      CommentsService.getByPostId(postId).then(response => {
+        this.giveValue(response.data, index);
+        console.log(`Fetched comments for post ${postId}:`, this.posts[index].comments);
+      }).catch(error => {
+        console.error("There was an error fetching the comments:", error);
+      });
+    },
+    giveValue(value, index) {
+      this.posts[index].comments = value;
+    },
 
     createPost() {
       if (!this.newPostContent.trim() || !this.selectedFile) {
@@ -162,15 +174,8 @@
             console.error("Failed to create comment:", error.response ? error.response.data : error);
             alert('Failed to create comment. Please try again.');
           });
-    }
-  },
-    fetchComments(postId) {
-      CommentsService.getByPostId(postId).then(response => {
-        this.comments = response.data;
-      }).catch(error => {
-        console.error("There was an error fetching the comments:", error);
-      });
     },
+  },
     mounted() {
       this.fetchPosts();
       this.posts.forEach(post => {
@@ -180,6 +185,7 @@
 }
 </script>
 <template>
+  <pv-toast/>
   <!-- Main content area -->
   <div class="flex flex-column" style="width:95%; margin-left:5%;">
     <!-- Post creation section -->
@@ -207,29 +213,38 @@
           <div v-for="post in posts" :key="post.id" class="col-8 inline-block border border-gray-300 rounded-lg mb-4 bg-white" style="width:100%;">
             <pv-card>
               <template #title>
-                <div>
-                  <router-link :to="'profile/' + post.user.username" style="text-decoration: none">
-                    <i class="pi pi-user"/>
-                    <h5>{{ post.user.username }}</h5>
-                  </router-link>
-                  <p class="font-light" style="font-size:15px;">{{ post.content }}</p>
-                  <!-- Add this line to display the image -->
-                  <img :src="post.image" alt="Post image" style="width: 300px; height: 325px;" />
-                </div>
-                <div class="comments-section">
-                  <h2>Comments</h2>
-                  <div v-for="comment in comments.filter(comment => comment.postId === post.id)" :key="comment.id">
-                    <p class="comment-content">{{ comment.content }}</p>
+                <div style="display: flex;">
+                  <!-- Left side: Post information -->
+                  <div style="flex: 1; padding-right: 20px;">
+                    <router-link :to="'profile/' + post.user.username" style="text-decoration: none">
+                      <i class="pi pi-user"></i>
+                      <h5>{{ post.user.username }}</h5>
+                    </router-link>
+                    <p class="font-light" style="font-size:15px;">{{ post.content }}</p>
+                    <img :src="post.image" alt="Post image" style="width: 300px; height: 325px;" />
+                    <h2>Interactions</h2>
+                    <div v-for="comment in comments.filter(comment => comment.postId === post.id)" :key="comment.id">
+                      <p class="comment-content">{{ comment.content }}</p>
+                    </div>
+                    <div style="display:flex; gap:10px;">
+                      <pv-button @click="handleLike(post.id)" style="display:flex;justify-content: center; align-items: center; position:static;background-color:#131920;">
+                        <i class="pi pi-thumbs-up" :class="{ 'liked': post.likes.includes(userStore.username) } + ' mr-2'"></i>
+                        {{ post.likeCount }}
+                      </pv-button>
+                      <form @submit.prevent="createComment(post.id)" style="display:flex;">
+                        <pv-input-text type="text" v-model="newComment" placeholder="Add a comment..." class="comment-input"/>
+                        <pv-button type="submit" class="comment-submit-btn" style="position:static;background-color:#131920; margin-left:10px;">Post Comment</pv-button>
+                      </form>
+                    </div>
                   </div>
-                  <form @submit.prevent="createComment(post.id)">
-                    <input type="text" v-model="newComment" placeholder="Add a comment..." class="comment-input"/>
-                    <button type="submit" class="comment-submit-btn">Post Comment</button>
-                  </form>
+
+                  <!-- Right side: Comments and interactions -->
+                  <div style="flex: 1; border-left: 1px solid #ddd; padding-left: 20px;">
+                    <div v-for="comment in post.comments">
+                      {{comment.content}}
+                    </div>
+                  </div>
                 </div>
-                <button @click="handleLike(post.id)">
-                <i class="pi pi-thumbs-up" :class="{ 'liked': post.likes.includes(userStore.username) }"></i>
-                {{ post.likeCount }}
-              </button>
               </template>
             </pv-card>
           </div>
