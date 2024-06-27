@@ -1,23 +1,14 @@
-# Use an official Node base image
-FROM node:latest
+FROM node:lts-alpine AS builder
 
-# Set the working directory
 WORKDIR /app
-
-# Copy your application files (including package.json and package-lock.json if available) to the container
-COPY . /app
-
-# Install project dependencies
+COPY package*.json ./
 RUN npm install
+COPY . .
+RUN npm install vite
 
-# Install Vue CLI globally in the container
-RUN npm install -g @vue/cli
-
-# Verify that vue-cli-service is available
-RUN npx vue-cli-service --version
-
-# Expose the port the app runs on
-EXPOSE 4200
-
-# Define the command to run your app (this will be the default command run by the container)
-CMD ["npm", "run", "serve"]
+FROM node:lts-alpine
+WORKDIR /app
+COPY --from=builder /app/dist ./dist
+RUN npm install -g http-server
+EXPOSE 8080
+CMD ["http-server", "dist"]

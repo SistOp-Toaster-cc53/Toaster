@@ -15,10 +15,12 @@ export default {
     onSignUp() {
       let authenticationStore = useAuthenticationStore();
       let signUpRequest = new SignUpRequest(this.username, this.password);
-      authenticationStore.signUp(signUpRequest, this.$router);
-    },
-  }
+      authenticationStore.signUp(signUpRequest).then(() => {
+        this.$router.push('/signin');  // Redirige al usuario a la página de inicio de sesión
+      });
+    },}
 }
+
 </script>
 
 <template>

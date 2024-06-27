@@ -8,11 +8,11 @@ import ProfileComponent from "../profile/pages/profile.component.vue";
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
     routes: [
-        { path: '/sign-in', name: '/sign-in', component: SignInComponent, props: true, },
-        { path: '/sign-up', name: 'sign-up', component: SignUpComponent, props: true, },
+        {path: '/sign-in', component: SignInComponent, meta: { hideHeaderAndSidebar: true }},
+        {path: '/sign-up', component: SignUpComponent, meta: { hideHeaderAndSidebar: true }},
         { path: '/home', name: 'home', component: HomeComponent, props: true, },
         { path: '/profile', name:'profile', component: ProfileComponent, props:true, },
-        { path: '/', redirect: 'login' },
+        { path: '/', redirect: 'home' },
     ]
 })
 
